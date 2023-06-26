@@ -5,58 +5,51 @@ import models.Subtask;
 import models.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class Main {
 
     static TaskManager taskManager;
 
-    //создаем мапу для хранения всех данных
+    //создаем мапы для хранения всех данных
     static {
-        HashMap<StatusType, List<Task>> listHashMap = new HashMap<>();
-        listHashMap.put(StatusType.NEW, new ArrayList<>());
-        listHashMap.put(StatusType.IN_PROGRESS, new ArrayList<>());
-        listHashMap.put(StatusType.DONE, new ArrayList<>());
-        taskManager = new TaskManager(listHashMap);
+        taskManager = new TaskManager(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public static void main(String[] args) {
 
-        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки");
-        Subtask subtask2 = new Subtask("Грузчики", "найти помощников");
         EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
-        epicTask.setSubtasks(new ArrayList<>(Arrays.asList(subtask1, subtask2)));
+        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки", epicTask);
+        Subtask subtask2 = new Subtask("Грузчики", "найти помощников", epicTask);
 
-        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина");
         EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
-        epicTask2.setSubtasks(new ArrayList<>(Arrays.asList(subtask3)));
+        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина", epicTask2);
 
-        //создаем 2 эпика
-        taskManager.newTask(epicTask);
-        taskManager.newTask(epicTask2);
+        taskManager.newEpicTask(epicTask);
+        taskManager.newEpicTask(epicTask2);
 
-        //распечатываем
-        System.out.println(taskManager.getAllTasks());
+        taskManager.newSubtask(subtask1);
+        taskManager.newSubtask(subtask2);
+        taskManager.newSubtask(subtask3);
 
-        //изменяем статус у подзадачи
-        taskManager.changeTask(3, subtask3, StatusType.IN_PROGRESS);
+        System.out.println(taskManager.getAllEpicTask());
+        System.out.println(taskManager.getAllSubtask());
 
-        //распечатываем
-        System.out.println(taskManager.getAllTasks());
+        taskManager.changeSubtask(1,
+                new Subtask("Вещи", "сложить все в коробки", taskManager.getEpicById(0)), StatusType.DONE);
+        taskManager.changeSubtask(2,
+                new Subtask("Грузчики", "найти помощников", taskManager.getEpicById(0)), StatusType.DONE);
+        taskManager.changeSubtask(4,
+                new Subtask("Магазин", "купить продукты для ужина", taskManager.getEpicById(3)), StatusType.IN_PROGRESS);
 
-        //удаляем подзадачу
-        taskManager.removeTaskById(3);
+        System.out.println();
+        System.out.println(taskManager.getAllEpicTask());
+        System.out.println(taskManager.getAllSubtask());
 
-        //распечатываем
-        System.out.println(taskManager.getAllTasks());
+        taskManager.removeEpicTaskById(0);
+        taskManager.removeSubtaskById(7);
 
-        //удаляем весь эпик
-        taskManager.removeTaskById(2);
-
-        //распечатываем
-        System.out.println(taskManager.getAllTasks());
-
+        System.out.println();
+        System.out.println(taskManager.getAllEpicTask());
+        System.out.println(taskManager.getAllSubtask());
     }
 }
