@@ -3,15 +3,13 @@ import models.EpicTask;
 import models.StatusType;
 import models.Subtask;
 
-import java.util.ArrayList;
-
 public class Main {
 
     static TaskManager taskManager;
 
     //создаем мапы для хранения всех данных
     static {
-        taskManager = new TaskManager(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        taskManager = new TaskManager();
     }
 
     public static void main(String[] args) {
@@ -44,8 +42,9 @@ public class Main {
         System.out.println(taskManager.getAllEpicTask());
         System.out.println(taskManager.getAllSubtask());
 
-        taskManager.removeEpicTaskById(0);
-        taskManager.removeSubtaskById(7);
+        taskManager.removeEpicTaskById(3);
+        taskManager.removeSubtaskById(5);
+        taskManager.removeSubtaskById(6);
 
         System.out.println();
         System.out.println(taskManager.getAllEpicTask());
