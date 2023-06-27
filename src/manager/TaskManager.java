@@ -194,9 +194,13 @@ public class TaskManager {
 
     public void changeEpicTask(int id, EpicTask epicTask) {
         for (List<EpicTask> taskList : epics.values()) {
-            removeEpicTaskById(id);
-            epics.get(StatusType.NEW).add(epicTask);
-            break;
+            for (EpicTask task : taskList) {
+                if (id == task.getId()) {
+                    task.setTaskName(epicTask.getTaskName());
+                    task.setDescription(epicTask.getDescription());
+                    break;
+                }
+            }
         }
     }
 

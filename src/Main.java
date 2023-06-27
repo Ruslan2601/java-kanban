@@ -2,7 +2,6 @@ import manager.TaskManager;
 import models.EpicTask;
 import models.StatusType;
 import models.Subtask;
-import models.Task;
 
 import java.util.ArrayList;
 
