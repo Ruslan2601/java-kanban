@@ -31,20 +31,20 @@ public class Main {
         System.out.println(taskManager.getAllEpicTask());
         System.out.println(taskManager.getAllSubtask());
 
-        taskManager.changeSubtask(1,
-                new Subtask("Вещи", "сложить все в коробки", taskManager.getEpicById(0)), StatusType.DONE);
-        taskManager.changeSubtask(2,
-                new Subtask("Грузчики", "найти помощников", taskManager.getEpicById(0)), StatusType.DONE);
+        taskManager.changeSubtask(3,
+                new Subtask("Вещи", "сложить все в коробки", taskManager.getEpicById(1)), StatusType.DONE);
         taskManager.changeSubtask(4,
-                new Subtask("Магазин", "купить продукты для ужина", taskManager.getEpicById(3)), StatusType.IN_PROGRESS);
+                new Subtask("Грузчики", "найти помощников", taskManager.getEpicById(1)), StatusType.DONE);
+        taskManager.changeSubtask(5,
+                new Subtask("Магазин", "купить продукты для ужина", taskManager.getEpicById(2)), StatusType.IN_PROGRESS);
 
         System.out.println();
         System.out.println(taskManager.getAllEpicTask());
         System.out.println(taskManager.getAllSubtask());
 
-        taskManager.removeEpicTaskById(3);
-        taskManager.removeSubtaskById(5);
+        taskManager.removeEpicTaskById(2);
         taskManager.removeSubtaskById(6);
+        taskManager.removeSubtaskById(7);
 
         System.out.println();
         System.out.println(taskManager.getAllEpicTask());

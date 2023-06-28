@@ -9,6 +9,9 @@ import util.TaskNotFined;
 import java.util.*;
 
 public class TaskManager {
+
+    private static int generateId = 0;
+
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Subtask> subTasks = new HashMap<>();
     private final HashMap<Integer, EpicTask> epics = new HashMap<>();
@@ -44,16 +47,22 @@ public class TaskManager {
 
     //создаем новую задачу
     public void newTask(Task task) {
-        tasks.put(task.getId(), task);
+        final int id = ++generateId;
+        task.setId(id);
+        tasks.put(id, task);
     }
 
     public void newSubtask(Subtask subtask) {
-        subTasks.put(subtask.getId(), subtask);
+        final int id = ++generateId;
+        subtask.setId(id);
+        subTasks.put(id, subtask);
         epics.get(subtask.getEpicTask().getId()).getSubtasks().add(subtask);
         updateEpicStatus(epics.get(subtask.getEpicTask().getId()));
     }
 
     public void newEpicTask(EpicTask epicTask) {
+        final int id = ++generateId;
+        epicTask.setId(id);
         epics.put(epicTask.getId(), epicTask);
     }
 
@@ -61,7 +70,7 @@ public class TaskManager {
     public List<Subtask> getAllSubTaskByEpicID(int id) {
         try {
             return epics.get(id).getSubtasks();
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             throw new TaskNotFined("Эпик с идентификатором " + id + " не найден.");
         }
     }
@@ -80,7 +89,7 @@ public class TaskManager {
             updateEpicStatus(epics.get(subTasks.get(id)
                     .getEpicTask().getId()));
             subTasks.remove(id);
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");
         }
     }
@@ -113,7 +122,9 @@ public class TaskManager {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
             task.setStatus(statusType);
-            tasks.put(task.getId(), task);
+            final int idNew = ++generateId;
+            task.setId(idNew);
+            tasks.put(idNew, task);
         }
     }
 
@@ -121,11 +132,17 @@ public class TaskManager {
         exceptionHandler(id);
         subTasks.remove(id);
         subtask.setStatus(statusType);
-        subTasks.put(subtask.getId(), subtask);
+        final int idNew = ++generateId;
+        subtask.setId(idNew);
+        subTasks.put(idNew, subtask);
 
-        epics.get(subtask.getEpicTask().getId()).getSubtasks()
-                .removeIf(task1 -> task1.getId() == id);
-        epics.get(subtask.getEpicTask().getId()).getSubtasks().add(subtask);
+        try {
+            epics.get(subtask.getEpicTask().getId()).getSubtasks()
+                    .removeIf(task1 -> task1.getId() == id);
+            epics.get(subtask.getEpicTask().getId()).getSubtasks().add(subtask);
+        } catch (NullPointerException e) {
+            throw new TaskNotFined("Эпик с идентификатором " + id + " не найден.");
+        }
         updateEpicStatus(subtask.getEpicTask());
     }
 
@@ -133,7 +150,9 @@ public class TaskManager {
         exceptionHandler(id);
         epicTask.setSubtasks(epics.get(id).getSubtasks());
         epics.remove(id);
-        epics.put(epicTask.getId(), epicTask);
+        final int idNew = ++generateId;
+        epicTask.setId(idNew);
+        epics.put(idNew, epicTask);
         updateEpicStatus(epicTask);
     }
 

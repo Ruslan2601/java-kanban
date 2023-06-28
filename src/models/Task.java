@@ -3,14 +3,12 @@ package models;
 import java.util.Objects;
 
 public class Task {
-    private static int generateId = 0;
     private int id;
     private String taskName;
     private String description;
     private StatusType status = StatusType.NEW;
 
     public Task(String taskName, String description) {
-        this.id = generateId++;
         this.taskName = taskName;
         this.description = description;
     }
