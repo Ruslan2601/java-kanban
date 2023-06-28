@@ -149,9 +149,11 @@ public class TaskManager {
     public void changeEpicTask(int id, EpicTask epicTask) {
         exceptionHandler(id);
         epicTask.setSubtasks(epics.get(id).getSubtasks());
-        epics.remove(id);
         final int idNew = ++generateId;
         epicTask.setId(idNew);
+        subTasks.values().stream().filter(x -> x.getEpicTask().getId() == id)
+                .forEach(x -> x.getEpicTask().setId(idNew));
+        epics.remove(id);
         epics.put(idNew, epicTask);
         updateEpicStatus(epicTask);
     }
