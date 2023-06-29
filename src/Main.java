@@ -15,14 +15,13 @@ public class Main {
     public static void main(String[] args) {
 
         EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
-        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки", epicTask);
-        Subtask subtask2 = new Subtask("Грузчики", "найти помощников", epicTask);
+        taskManager.newEpicTask(epicTask);
+        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки", epicTask.getId());
+        Subtask subtask2 = new Subtask("Грузчики", "найти помощников", epicTask.getId());
 
         EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
-        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина", epicTask2);
-
-        taskManager.newEpicTask(epicTask);
         taskManager.newEpicTask(epicTask2);
+        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина", epicTask2.getId());
 
         taskManager.newSubtask(subtask1);
         taskManager.newSubtask(subtask2);
@@ -32,11 +31,11 @@ public class Main {
         System.out.println(taskManager.getAllSubtask());
 
         taskManager.changeSubtask(3,
-                new Subtask("Вещи", "сложить все в коробки", taskManager.getEpicById(1)), StatusType.DONE);
+                new Subtask("Вещи", "сложить все в коробки", 1), StatusType.DONE);
         taskManager.changeSubtask(4,
-                new Subtask("Грузчики", "найти помощников", taskManager.getEpicById(1)), StatusType.DONE);
+                new Subtask("Грузчики", "найти помощников", 1), StatusType.DONE);
         taskManager.changeSubtask(5,
-                new Subtask("Магазин", "купить продукты для ужина", taskManager.getEpicById(2)), StatusType.IN_PROGRESS);
+                new Subtask("Магазин", "купить продукты для ужина", 2), StatusType.IN_PROGRESS);
 
         System.out.println();
         System.out.println(taskManager.getAllEpicTask());

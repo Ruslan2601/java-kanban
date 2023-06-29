@@ -7,6 +7,7 @@ import models.Task;
 import util.TaskNotFined;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaskManager {
 
@@ -46,33 +47,33 @@ public class TaskManager {
     }
 
     //создаем новую задачу
-    public void newTask(Task task) {
+    public Task newTask(Task task) {
         final int id = ++generateId;
         task.setId(id);
         tasks.put(id, task);
+        return task;
     }
 
-    public void newSubtask(Subtask subtask) {
+    public Subtask newSubtask(Subtask subtask) {
         final int id = ++generateId;
         subtask.setId(id);
         subTasks.put(id, subtask);
-        epics.get(subtask.getEpicTask().getId()).getSubtasks().add(subtask);
-        updateEpicStatus(epics.get(subtask.getEpicTask().getId()));
+        epics.get(subtask.getEpicId()).getSubtasks().add(subtask.getId());
+        updateEpicStatus(epics.get(subtask.getEpicId()));
+        return subtask;
     }
 
-    public void newEpicTask(EpicTask epicTask) {
+    public EpicTask newEpicTask(EpicTask epicTask) {
         final int id = ++generateId;
         epicTask.setId(id);
         epics.put(epicTask.getId(), epicTask);
+        return epicTask;
     }
 
     //находим все подзадачи
     public List<Subtask> getAllSubTaskByEpicID(int id) {
-        try {
-            return epics.get(id).getSubtasks();
-        } catch (NullPointerException e) {
-            throw new TaskNotFined("Эпик с идентификатором " + id + " не найден.");
-        }
+        exceptionHandler(id);
+        return subTasks.values().stream().filter(x -> x.getEpicId() == id).collect(Collectors.toList());
     }
 
     //удаляем задачу по идентификатору
@@ -83,11 +84,10 @@ public class TaskManager {
 
     public void removeSubtaskById(int id) {
         try {
-            epics.get(subTasks.get(id).getEpicTask()
-                    .getId()).getSubtasks()
-                    .removeIf(task -> task.equals(subTasks.get(id)));
+            epics.get(subTasks.get(id).getEpicId()).getSubtasks()
+                    .removeIf(task -> task == id);
             updateEpicStatus(epics.get(subTasks.get(id)
-                    .getEpicTask().getId()));
+                    .getEpicId()));
             subTasks.remove(id);
         } catch (NullPointerException e) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");
@@ -97,7 +97,7 @@ public class TaskManager {
     public void removeEpicTaskById(int id) {
         exceptionHandler(id);
         epics.remove(id);
-        subTasks.entrySet().removeIf(task -> task.getValue().getEpicTask().getId() == id);
+        subTasks.entrySet().removeIf(task -> task.getValue().getEpicId() == id);
     }
 
     //находим задачу по идентификатору
@@ -137,13 +137,13 @@ public class TaskManager {
         subTasks.put(idNew, subtask);
 
         try {
-            epics.get(subtask.getEpicTask().getId()).getSubtasks()
-                    .removeIf(task1 -> task1.getId() == id);
-            epics.get(subtask.getEpicTask().getId()).getSubtasks().add(subtask);
+            epics.get(subtask.getEpicId()).getSubtasks()
+                    .remove((Integer) id);
+            epics.get(subtask.getEpicId()).getSubtasks().add(subtask.getId());
         } catch (NullPointerException e) {
             throw new TaskNotFined("Эпик с идентификатором " + id + " не найден.");
         }
-        updateEpicStatus(subtask.getEpicTask());
+        updateEpicStatus(epics.get(subtask.getEpicId()));
     }
 
     public void changeEpicTask(int id, EpicTask epicTask) {
@@ -151,21 +151,25 @@ public class TaskManager {
         epicTask.setSubtasks(epics.get(id).getSubtasks());
         final int idNew = ++generateId;
         epicTask.setId(idNew);
-        subTasks.values().stream().filter(x -> x.getEpicTask().getId() == id)
-                .forEach(x -> x.getEpicTask().setId(idNew));
+        subTasks.values().stream().filter(x -> x.getEpicId() == id)
+                .forEach(x -> x.setEpicId(idNew));
         epics.remove(id);
         epics.put(idNew, epicTask);
         updateEpicStatus(epicTask);
     }
 
     private void updateEpicStatus(EpicTask epicTask) {
-        boolean done = epicTask.getSubtasks().stream().anyMatch(x -> x.getStatus().equals(StatusType.DONE));
-        boolean inProgress = epicTask.getSubtasks().stream().anyMatch(x -> x.getStatus().equals(StatusType.IN_PROGRESS));
+        boolean done = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                .anyMatch(x -> x.getStatus().equals(StatusType.DONE));
+        boolean inProgress = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                .anyMatch(x -> x.getStatus().equals(StatusType.IN_PROGRESS));
 
         int match = epicTask.getSubtasks().size();
-        for (int i = 0; i < epicTask.getSubtasks().size(); i++) {
-            if (epicTask.getSubtasks().get(i).getStatus().equals(StatusType.DONE)) {
-                match--;
+        for (Subtask subtask : subTasks.values()) {
+            if (subtask.getEpicId() == epicTask.getId()) {
+                if (subtask.getStatus().equals(StatusType.DONE)) {
+                    match--;
+                }
             }
         }
 

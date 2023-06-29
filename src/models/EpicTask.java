@@ -5,17 +5,17 @@ import java.util.List;
 
 public class EpicTask extends Task {
 
-    private List<Subtask> subtasks = new ArrayList<>();
+    private List<Integer> subtasks = new ArrayList<>();
 
     public EpicTask(String taskName, String description) {
         super(taskName, description);
     }
 
-    public List<Subtask> getSubtasks() {
+    public List<Integer> getSubtasks() {
         return subtasks;
     }
 
-    public void setSubtasks(List<Subtask> subtasks) {
+    public void setSubtasks(List<Integer> subtasks) {
         this.subtasks = subtasks;
     }
 
