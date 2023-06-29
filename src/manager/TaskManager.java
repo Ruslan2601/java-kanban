@@ -164,18 +164,11 @@ public class TaskManager {
         boolean inProgress = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
                 .anyMatch(x -> x.getStatus().equals(StatusType.IN_PROGRESS));
 
-        int match = epicTask.getSubtasks().size();
-        for (Subtask subtask : subTasks.values()) {
-            if (subtask.getEpicId() == epicTask.getId()) {
-                if (subtask.getStatus().equals(StatusType.DONE)) {
-                    match--;
-                }
-            }
-        }
-
         if (epicTask.getSubtasks().size() == 0 | !done & !inProgress) {
             epicTask.setStatus(StatusType.NEW);
-        } else if (match == 0) {
+        } else if (epicTask.getSubtasks().size() == subTasks.values().stream()
+                .filter(x -> x.getEpicId() == epicTask.getId())
+                .filter(subtask -> subtask.getStatus().equals(StatusType.DONE)).count()) {
             epicTask.setStatus(StatusType.DONE);
         } else {
             epicTask.setStatus(StatusType.IN_PROGRESS);
