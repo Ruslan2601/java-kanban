@@ -42,8 +42,8 @@ public class Main {
         System.out.println(taskManager.getAllSubtask());
 
         taskManager.removeEpicTaskById(2);
-        taskManager.removeSubtaskById(6);
-        taskManager.removeSubtaskById(7);
+        taskManager.removeSubtaskById(3);
+        taskManager.removeSubtaskById(4);
 
         System.out.println();
         System.out.println(taskManager.getAllEpicTask());

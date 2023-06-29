@@ -130,31 +130,17 @@ public class TaskManager {
 
     public void changeSubtask(int id, Subtask subtask, StatusType statusType) {
         exceptionHandler(id);
-        subTasks.remove(id);
-        subtask.setStatus(statusType);
-        final int idNew = ++generateId;
-        subtask.setId(idNew);
-        subTasks.put(idNew, subtask);
-
-        try {
-            epics.get(subtask.getEpicId()).getSubtasks()
-                    .remove((Integer) id);
-            epics.get(subtask.getEpicId()).getSubtasks().add(subtask.getId());
-        } catch (NullPointerException e) {
-            throw new TaskNotFined("Эпик с идентификатором " + id + " не найден.");
-        }
+        subTasks.get(id).setEpicId(subtask.getEpicId());
+        subTasks.get(id).setTaskName(subtask.getTaskName());
+        subTasks.get(id).setDescription(subtask.getDescription());
+        subTasks.get(id).setStatus(statusType);
         updateEpicStatus(epics.get(subtask.getEpicId()));
     }
 
     public void changeEpicTask(int id, EpicTask epicTask) {
         exceptionHandler(id);
-        epicTask.setSubtasks(epics.get(id).getSubtasks());
-        final int idNew = ++generateId;
-        epicTask.setId(idNew);
-        subTasks.values().stream().filter(x -> x.getEpicId() == id)
-                .forEach(x -> x.setEpicId(idNew));
-        epics.remove(id);
-        epics.put(idNew, epicTask);
+        epics.get(id).setTaskName(epicTask.getTaskName());
+        epics.get(id).setDescription(epicTask.getDescription());
         updateEpicStatus(epicTask);
     }
 
