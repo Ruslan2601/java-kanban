@@ -1,5 +1,7 @@
 package models;
 
+import util.StatusType;
+
 import java.util.Objects;
 
 public class Task {
