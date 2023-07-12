@@ -1,16 +1,11 @@
-import services.InMemoryTaskManager;
+import interfaces.TaskManager;
 import models.EpicTask;
 import services.Managers;
 import models.Subtask;
 
 public class Main {
 
-    static InMemoryTaskManager inMemoryTaskManager;
-
-    //создаем мапы для хранения всех данных
-    static {
-        inMemoryTaskManager = (InMemoryTaskManager) Managers.getDefault();
-    }
+    static TaskManager inMemoryTaskManager = Managers.getDefault();
 
     public static void main(String[] args) {
 

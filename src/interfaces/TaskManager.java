@@ -52,4 +52,6 @@ public interface TaskManager {
     void changeSubtask(int id, Subtask subtask, StatusType statusType);
 
     void changeEpicTask(int id, EpicTask epicTask);
+
+    void printHistory();
 }

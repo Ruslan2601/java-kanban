@@ -170,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epicTask);
     }
 
+    @Override
     public void printHistory() {
         System.out.println("История последних 10 просмотров:");
         historyManager.getHistory().forEach(System.out::println);
