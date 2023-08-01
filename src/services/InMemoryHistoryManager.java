@@ -9,16 +9,11 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final CustomLinkedList<Task> history = new CustomLinkedList<>();
-    private static final int MAX_HISTORY_SIZE = 10;
     private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
 
     //добавляем задачу в историю просмотров
     @Override
     public void addHistory(Task task) {
-        if (historyMap.size() >= MAX_HISTORY_SIZE) {
-            historyMap.remove(history.head.data.getId());
-            history.removeNode(history.head);
-        }
         if (historyMap.containsKey(task.getId())) {
             history.removeNode(historyMap.get(task.getId()));
         }
@@ -42,7 +37,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         private Node<Task> head;
         private Node<Task> tail;
-        private int size = 0;
 
         public Node<Task> linkLast(Task element) {
             final Node<Task> oldTail = tail;
@@ -52,7 +46,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 head = newNode;
             else
                 oldTail.next = newNode;
-            size++;
             return newNode;
         }
 
