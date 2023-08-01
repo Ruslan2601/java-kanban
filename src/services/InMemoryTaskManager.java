@@ -40,20 +40,35 @@ public class InMemoryTaskManager implements TaskManager {
     //удаляем все задачи
     @Override
     public void removeAllTasks() {
-        tasks.clear();
+        List<Integer> ids = new ArrayList(tasks.keySet());
+        for (Integer id : ids) {
+            tasks.remove(id);
+            ;
+            historyManager.remove(id);
+        }
     }
 
     @Override
     public void removeAllSubtask() {
-        subTasks.clear();
+        List<Integer> ids = new ArrayList(subTasks.keySet());
+        for (Integer id : ids) {
+            subTasks.remove(id);
+            ;
+            historyManager.remove(id);
+        }
         epics.values().forEach(x -> x.getSubtasks().clear());
         epics.values().forEach(this::updateEpicStatus);
     }
 
     @Override
     public void removeAllEpicTask() {
+        removeAllSubtask();
+        List<Integer> ids = new ArrayList(epics.keySet());
+        for (Integer id : ids) {
+            epics.remove(id);
+            historyManager.remove(id);
+        }
         epics.clear();
-        subTasks.clear();
     }
 
     //создаем новую задачу
@@ -95,6 +110,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTaskById(int id) {
         exceptionHandler(id);
         tasks.values().removeIf(task -> task.equals(tasks.get(id)));
+        historyManager.remove(id);
     }
 
     @Override
@@ -108,13 +124,19 @@ public class InMemoryTaskManager implements TaskManager {
         } catch (NullPointerException e) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");
         }
+        historyManager.remove(id);
     }
 
     @Override
     public void removeEpicTaskById(int id) {
         exceptionHandler(id);
+        List<Integer> ids = new ArrayList(epics.get(id).getSubtasks());
+        for (Integer idSubtask : ids) {
+            historyManager.remove(idSubtask);
+        }
         epics.remove(id);
         subTasks.entrySet().removeIf(task -> task.getValue().getEpicId() == id);
+        historyManager.remove(id);
     }
 
     //находим задачу по идентификатору
@@ -170,12 +192,14 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epicTask);
     }
 
+    //распечатываем историю запросов
     @Override
     public void printHistory() {
         System.out.println("История последних 10 просмотров:");
         historyManager.getHistory().forEach(System.out::println);
     }
 
+    //обновление статуса
     private void updateEpicStatus(EpicTask epicTask) {
         boolean done = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
                 .anyMatch(x -> x.getStatus().equals(StatusType.DONE));
@@ -193,6 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    //ловим ошибки
     private void exceptionHandler(int id) {
         if (!tasks.containsKey(id) & !subTasks.containsKey(id) & !epics.containsKey(id)) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");

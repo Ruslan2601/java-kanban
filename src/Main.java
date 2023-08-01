@@ -25,17 +25,21 @@ public class Main {
         System.out.println(inMemoryTaskManager.getAllEpicTask());
         System.out.println(inMemoryTaskManager.getAllSubtask());
         inMemoryTaskManager.getSubtaskById(3);
+        inMemoryTaskManager.getSubtaskById(4);
         inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
+        inMemoryTaskManager.getEpicById(2);
+        inMemoryTaskManager.getSubtaskById(5);
         inMemoryTaskManager.getSubtaskById(3);
+        inMemoryTaskManager.getSubtaskById(4);
         inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getSubtaskById(3);
+        inMemoryTaskManager.getEpicById(2);
+        inMemoryTaskManager.getSubtaskById(5);
 
         inMemoryTaskManager.printHistory();
+        System.out.println();
+        inMemoryTaskManager.removeEpicTaskById(2);
+        inMemoryTaskManager.printHistory();
+        System.out.println();
+
     }
 }
