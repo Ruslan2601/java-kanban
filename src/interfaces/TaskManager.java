@@ -1,9 +1,9 @@
-package main.interfaces;
+package interfaces;
 
-import main.models.EpicTask;
-import main.models.Subtask;
-import main.models.Task;
-import main.util.StatusType;
+import models.EpicTask;
+import models.Subtask;
+import models.Task;
+import util.StatusType;
 
 import java.util.List;
 

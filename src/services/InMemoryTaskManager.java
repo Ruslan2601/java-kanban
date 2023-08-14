@@ -1,12 +1,12 @@
-package main.services;
+package services;
 
-import main.interfaces.HistoryManager;
-import main.interfaces.TaskManager;
-import main.models.EpicTask;
-import main.util.StatusType;
-import main.models.Subtask;
-import main.models.Task;
-import main.util.TaskNotFined;
+import interfaces.HistoryManager;
+import interfaces.TaskManager;
+import models.EpicTask;
+import util.StatusType;
+import models.Subtask;
+import models.Task;
+import util.TaskNotFined;
 
 import java.util.*;
 import java.util.stream.Collectors;
