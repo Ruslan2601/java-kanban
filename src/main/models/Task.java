@@ -1,6 +1,6 @@
-package models;
+package main.models;
 
-import util.StatusType;
+import main.util.StatusType;
 
 import java.util.Objects;
 

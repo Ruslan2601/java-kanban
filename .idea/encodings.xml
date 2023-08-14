@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
-    <file url="file://$PROJECT_DIR$/src/Main.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/models/EpicTask.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/models/Subtask.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/models/Task.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/services/BaseService.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/services/InMemoryTaskManager.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/services/InMemoryTaskManager.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/services/TaskService.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/util/ErrorResponse.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/util/StatusType.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/util/StatusType.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/util/TaskNotFined.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/Main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/Main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/models/EpicTask.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/models/Subtask.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/models/Task.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/services/BaseService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/services/InMemoryTaskManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/services/TaskService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/util/ErrorResponse.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/util/StatusType.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/util/TaskNotFined.java" charset="UTF-8" />
     <file url="PROJECT" charset="windows-1251" />
   </component>
 </project>
