@@ -1,13 +1,287 @@
 package main.services;
 
+import main.interfaces.HistoryManager;
+import main.models.EpicTask;
+import main.models.Subtask;
+import main.models.Task;
+import main.util.ManagerSaveException;
+import main.util.StatusType;
+import main.util.TaskNotFined;
+import main.util.TaskType;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final String path;
+    private File file;
 
     public FileBackedTasksManager(String path) {
-        this.path = path;
+        this.file = new File(path);
+    }
+
+    public FileBackedTasksManager() {
+    }
+
+    //удаляем все задачи
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
+    }
+
+    @Override
+    public void removeAllSubtask() {
+        super.removeAllSubtask();
+        save();
+    }
+
+    @Override
+    public void removeAllEpicTask() {
+        super.removeAllEpicTask();
+        save();
+    }
+
+    //создаем новую задачу
+    @Override
+    public Task newTask(Task task) {
+        Task task1 = super.newTask(task);
+        save();
+        return task1;
+    }
+
+    @Override
+    public Subtask newSubtask(Subtask subtask) {
+        Subtask subtask1 = super.newSubtask(subtask);
+        save();
+        return subtask1;
+    }
+
+    @Override
+    public EpicTask newEpicTask(EpicTask epicTask) {
+        EpicTask epicTask1 = super.newEpicTask(epicTask);
+        save();
+        return epicTask1;
+    }
+
+    //удаляем задачу по идентификатору
+    @Override
+    public void removeTaskById(int id) {
+        super.removeTaskById(id);
+        save();
+    }
+
+    @Override
+    public void removeSubtaskById(int id) {
+        super.removeSubtaskById(id);
+        save();
+    }
+
+    @Override
+    public void removeEpicTaskById(int id) {
+        super.removeEpicTaskById(id);
+        save();
+    }
+
+    //находим задачу по идентификатору
+    @Override
+    public Subtask getSubtaskById(int id) {
+        Subtask subtask1 = super.getSubtaskById(id);
+        save();
+        return subtask1;
+    }
+
+    @Override
+    public EpicTask getEpicById(int id) {
+        EpicTask epicTask1 = super.getEpicById(id);
+        save();
+        return epicTask1;
+    }
+
+    @Override
+    public Task getTaskById(int id) {
+        Task task1 = super.getTaskById(id);
+        save();
+        return task1;
+    }
+
+    //обновляем задачу
+    @Override
+    public void changeTask(int id, Task task, StatusType statusType) {
+        super.changeTask(id, task, statusType);
+        save();
+    }
+
+    @Override
+    public void changeSubtask(int id, Subtask subtask, StatusType statusType) {
+        super.changeSubtask(id, subtask, statusType);
+        save();
+    }
+
+    @Override
+    public void changeEpicTask(int id, EpicTask epicTask) {
+        super.changeEpicTask(id, epicTask);
+        save();
     }
 
     private void save() {
+        try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+            fileWriter.write("id,type,name,status,description,epic" + "\n");
+            for (Task task : super.getAllTasks()) {
+                fileWriter.write(task.toStringFromFile() + "\n");
+            }
+            for (EpicTask epicTask : super.getAllEpicTask()) {
+                fileWriter.write(epicTask.toStringFromFile() + "\n");
+            }
+            for (Subtask subtask : super.getAllSubtask()) {
+                fileWriter.write(subtask.toStringFromFile() + "\n");
+            }
+            fileWriter.write("\n");
+            fileWriter.write(historyToString(super.historyManager));
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при сохранении файла");
+        }
+    }
+
+    public Task fromString(String value) {
+        String[] strings = value.split(",");
+
+        switch (strings[1]) {
+            case ("TASK"):
+                Task task = new Task(strings[2], strings[4]);
+                task.setId(Integer.parseInt(strings[0]));
+                task.setStatus(StatusType.valueOf(strings[3]));
+                task.setType(TaskType.valueOf(strings[1]));
+                return task;
+            case ("SUBTASK"):
+                Subtask subtask = new Subtask(strings[2], strings[4], Integer.parseInt(strings[5]));
+                subtask.setId(Integer.parseInt(strings[0]));
+                subtask.setStatus(StatusType.valueOf(strings[3]));
+                subtask.setType(TaskType.valueOf(strings[1]));
+                return subtask;
+            case ("EPICTASK"):
+                EpicTask epicTask = new EpicTask(strings[2], strings[4]);
+                epicTask.setId(Integer.parseInt(strings[0]));
+                epicTask.setStatus(StatusType.valueOf(strings[3]));
+                epicTask.setType(TaskType.valueOf(strings[1]));
+                return epicTask;
+            default:
+                throw new TaskNotFined("Задачи с таким типом не предусмотрены");
+        }
+    }
+
+    public static String historyToString(HistoryManager manager) {
+        List<Task> taskList = manager.getHistory();
+        StringBuilder stringBuilder = new StringBuilder();
+        taskList.forEach(x -> stringBuilder.append(x.getId()).append(","));
+        return stringBuilder.toString();
+    }
+
+    public static List<Integer> historyFromString(String value) {
+        List<Integer> taskList = new ArrayList<>();
+        String[] strings = value.split(",");
+        for (String str : strings) {
+            taskList.add(Integer.parseInt(str));
+        }
+        return taskList;
+    }
+
+    public static FileBackedTasksManager loadFromFile(File file) {
+        List<String> strings = new ArrayList<>();
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            while (bufferedReader.ready()) {
+                strings.add(bufferedReader.readLine());
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при чтении файла");
+        }
+
+        if (strings.isEmpty()) {
+            throw new ManagerSaveException("Файл пуст");
+        }
+
+        List<Integer> historyList = historyFromString(strings.get(strings.size() - 1));
+        strings.remove(strings.size() - 1);
+        strings.remove(0);
+
+        FileBackedTasksManager manager = new FileBackedTasksManager();
+        InMemoryTaskManager inManger = new InMemoryTaskManager();
+
+        for (String str : strings) {
+            if (!str.isEmpty() || !str.isBlank()) {
+                Task task = manager.fromString(str);
+
+                if (task.getType().equals(TaskType.EPICTASK)) {
+                    inManger.newEpicTask((EpicTask) task);
+                } else if (task.getType().equals(TaskType.SUBTASK)) {
+                    inManger.newSubtask((Subtask) task);
+                } else {
+                    inManger.newTask(task);
+                }
+            }
+        }
+
+        for (int id : historyList) {
+            if (inManger.tasks.containsKey(id)) {
+               inManger.historyManager.addHistory(inManger.getTaskById(id));
+            } else if (inManger.subTasks.containsKey(id)) {
+                inManger.historyManager.addHistory(inManger.getSubtaskById(id));
+            } else {
+                inManger.historyManager.addHistory(inManger.getEpicById(id));
+            }
+        }
+
+        manager.epics = inManger.epics;
+        manager.subTasks = inManger.subTasks;
+        manager.tasks = inManger.tasks;
+        manager.historyManager = inManger.historyManager;
+        return manager;
+    }
+
+    public static void main(String[] args) {
+   /*    FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager("src/resources/history.csv");
+        EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
+        fileBackedTasksManager.newEpicTask(epicTask);
+        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки", epicTask.getId());
+        Subtask subtask2 = new Subtask("Грузчики", "найти помощников", epicTask.getId());
+
+
+        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
+        fileBackedTasksManager.newEpicTask(epicTask2);
+        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина", epicTask2.getId());
+
+        fileBackedTasksManager.newSubtask(subtask1);
+        fileBackedTasksManager.newSubtask(subtask2);
+        fileBackedTasksManager.newSubtask(subtask3);
+
+        System.out.println(fileBackedTasksManager.getAllEpicTask());
+        System.out.println(fileBackedTasksManager.getAllSubtask());
+        fileBackedTasksManager.getSubtaskById(3);
+        fileBackedTasksManager.getSubtaskById(4);
+        fileBackedTasksManager.getEpicById(1);
+        fileBackedTasksManager.getEpicById(2);
+        fileBackedTasksManager.getSubtaskById(5);
+        fileBackedTasksManager.getSubtaskById(3);
+        fileBackedTasksManager.getSubtaskById(4);
+        fileBackedTasksManager.getEpicById(1);
+        fileBackedTasksManager.getEpicById(2);
+        fileBackedTasksManager.getSubtaskById(5);
+
+        fileBackedTasksManager.printHistory();
+        System.out.println();
+
+        System.out.println();
+        System.out.println(fileBackedTasksManager.getAllTasks());
+*/
+
+      FileBackedTasksManager fileBackedTasksManager2 = loadFromFile(new File("src/resources/history.csv"));
+        fileBackedTasksManager2.printHistory();
+        System.out.println();
+        System.out.println(fileBackedTasksManager2.getAllEpicTask());
+        System.out.println(fileBackedTasksManager2.getAllSubtask());
 
     }
+
 }

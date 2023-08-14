@@ -2,8 +2,9 @@ package main;
 
 import main.interfaces.TaskManager;
 import main.models.EpicTask;
-import main.services.Managers;
 import main.models.Subtask;
+import main.services.Managers;
+import main.util.StatusType;
 
 public class Main {
 
@@ -42,6 +43,9 @@ public class Main {
         inMemoryTaskManager.removeEpicTaskById(2);
         inMemoryTaskManager.printHistory();
         System.out.println();
+
+        inMemoryTaskManager.changeSubtask(3, subtask1, StatusType.DONE);
+        System.out.println(inMemoryTaskManager.getAllSubtask());
 
     }
 }

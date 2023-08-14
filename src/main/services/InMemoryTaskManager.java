@@ -15,11 +15,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     private static int generateId = 0;
 
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Subtask> subTasks = new HashMap<>();
-    private final HashMap<Integer, EpicTask> epics = new HashMap<>();
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Subtask> subTasks = new HashMap<>();
+    protected HashMap<Integer, EpicTask> epics = new HashMap<>();
 
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 
     //находим все задачи и подзадачи
     @Override
@@ -43,7 +47,6 @@ public class InMemoryTaskManager implements TaskManager {
         List<Integer> ids = new ArrayList(tasks.keySet());
         for (Integer id : ids) {
             tasks.remove(id);
-            ;
             historyManager.remove(id);
         }
     }
@@ -53,7 +56,6 @@ public class InMemoryTaskManager implements TaskManager {
         List<Integer> ids = new ArrayList(subTasks.keySet());
         for (Integer id : ids) {
             subTasks.remove(id);
-            ;
             historyManager.remove(id);
         }
         epics.values().forEach(x -> x.getSubtasks().clear());
@@ -166,11 +168,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void changeTask(int id, Task task, StatusType statusType) {
         exceptionHandler(id);
         if (tasks.containsKey(id)) {
-            tasks.remove(id);
-            task.setStatus(statusType);
-            final int idNew = ++generateId;
-            task.setId(idNew);
-            tasks.put(idNew, task);
+            tasks.get(id).setDescription(task.getDescription());
+            tasks.get(id).setTaskName(task.getTaskName());
+            tasks.get(id).setStatus(statusType);
         }
     }
 

@@ -1,6 +1,7 @@
 package main.models;
 
 import main.util.StatusType;
+import main.util.TaskType;
 
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class Task {
     private String taskName;
     private String description;
     private StatusType status = StatusType.NEW;
+    private TaskType type = TaskType.TASK;
 
     public Task(String taskName, String description) {
         this.taskName = taskName;
@@ -47,6 +49,14 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,5 +78,10 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String toStringFromFile() {
+        return String.format("%s,%s,%s,%s,%s",
+                id, type, taskName, status, description);
     }
 }
