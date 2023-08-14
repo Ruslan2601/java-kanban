@@ -1,6 +1,6 @@
-package interfaces;
+package main.interfaces;
 
-import models.Task;
+import main.models.Task;
 
 import java.util.List;
 

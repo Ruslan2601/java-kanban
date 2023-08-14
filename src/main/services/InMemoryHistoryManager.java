@@ -1,8 +1,8 @@
-package services;
+package main.services;
 
-import interfaces.HistoryManager;
-import models.Task;
-import util.Node;
+import main.interfaces.HistoryManager;
+import main.models.Task;
+import main.util.Node;
 
 import java.util.*;
 

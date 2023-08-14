@@ -1,7 +1,7 @@
-package services;
+package main.services;
 
-import interfaces.HistoryManager;
-import interfaces.TaskManager;
+import main.interfaces.HistoryManager;
+import main.interfaces.TaskManager;
 
 public class Managers {
 

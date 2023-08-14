@@ -1,7 +1,9 @@
-import interfaces.TaskManager;
-import models.EpicTask;
-import services.Managers;
-import models.Subtask;
+package main;
+
+import main.interfaces.TaskManager;
+import main.models.EpicTask;
+import main.services.Managers;
+import main.models.Subtask;
 
 public class Main {
 
