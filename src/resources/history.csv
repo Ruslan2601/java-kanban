@@ -1,4 +1,5 @@
 id,type,name,status,description,epic
+6,TASK,task1,NEW,desTask1
 1,EPICTASK,Переезд,NEW,новая квартира
 2,EPICTASK,Ужин,NEW,подумать что приготовить на вечер
 3,SUBTASK,Вещи,NEW,сложить все в коробки,1
