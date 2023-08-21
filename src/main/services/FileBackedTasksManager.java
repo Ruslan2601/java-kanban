@@ -212,9 +212,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         strings.remove(strings.size() - 1);
         strings.remove(0);
 
+        int generateId = 0;
+
         for (String str : strings) {
             if (!str.isEmpty() || !str.isBlank()) {
                 Task task = manager.fromString(str);
+
+                if (task.getId() > generateId) {
+                    generateId = task.getId();
+                }
 
                 if (task.getType().equals(TaskType.EPICTASK)) {
                     manager.epics.put(task.getId(), (EpicTask) task);
@@ -225,6 +231,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         }
+
+        FileBackedTasksManager.setGenerateId(generateId);
 
         for (int id : historyList) {
             if (manager.tasks.containsKey(id)) {

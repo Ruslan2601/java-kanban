@@ -21,10 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public HistoryManager getHistoryManager() {
-        return historyManager;
-    }
-
     //находим все задачи и подзадачи
     @Override
     public List<Task> getAllTasks() {
@@ -199,6 +195,10 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.getHistory().forEach(System.out::println);
     }
 
+    public static void setGenerateId(int generateId) {
+        InMemoryTaskManager.generateId = generateId;
+    }
+
     //обновление статуса
     private void updateEpicStatus(EpicTask epicTask) {
         boolean done = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
@@ -216,6 +216,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.setStatus(StatusType.IN_PROGRESS);
         }
     }
+
 
     //ловим ошибки
     private void exceptionHandler(int id) {
