@@ -11,6 +11,7 @@ import main.util.TaskType;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     //сохраняем в файл все задачи и историю
     private void save() {
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write("id,type,name,status,description,epic" + "\n");
+            fileWriter.write("id,type,name,status,description,startTime,duration,epic" + "\n");
             for (Task task : super.getAllTasks()) {
                 fileWriter.write(task.toStringFromFile() + "\n");
             }
@@ -156,15 +157,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 task.setId(Integer.parseInt(strings[0]));
                 task.setStatus(StatusType.valueOf(strings[3]));
                 task.setType(TaskType.valueOf(strings[1]));
+                task.setDuration(Integer.parseInt(strings[6]));
+                task.setStartTime(Instant.parse(strings[5]));
                 return task;
             case ("SUBTASK"):
-                Subtask subtask = new Subtask(strings[2], strings[4], Integer.parseInt(strings[5]));
+                Subtask subtask = new Subtask(strings[2], strings[4], Integer.parseInt(strings[7]));
                 subtask.setId(Integer.parseInt(strings[0]));
                 subtask.setStatus(StatusType.valueOf(strings[3]));
                 subtask.setType(TaskType.valueOf(strings[1]));
+                subtask.setDuration(Integer.parseInt(strings[6]));
+                subtask.setStartTime(Instant.parse(strings[5]));
                 return subtask;
             case ("EPICTASK"):
-                EpicTask epicTask = new EpicTask(strings[2], strings[4]);
+                EpicTask epicTask = new EpicTask(strings[2], strings[4], Integer.parseInt(strings[6]), Instant.parse(strings[5]));
                 epicTask.setId(Integer.parseInt(strings[0]));
                 epicTask.setStatus(StatusType.valueOf(strings[3]));
                 epicTask.setType(TaskType.valueOf(strings[1]));
@@ -249,22 +254,28 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager("src/resources/history.csv");
-        EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
+        EpicTask epicTask = new EpicTask("Переезд", "новая квартира", 10, Instant.ofEpochSecond(1706185697L));
         fileBackedTasksManager.newEpicTask(epicTask);
-        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки", epicTask.getId());
-        Subtask subtask2 = new Subtask("Грузчики", "найти помощников", epicTask.getId());
+        System.out.println(fileBackedTasksManager.getAllEpicTask());
+
+        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки",
+                5, Instant.ofEpochSecond(1716185697L), epicTask.getId());
+        Subtask subtask2 = new Subtask("Грузчики", "найти помощников",
+                4, Instant.ofEpochSecond(1726185697L), epicTask.getId());
 
 
-        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
+        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер", 4, Instant.now().minusSeconds(2000));
         fileBackedTasksManager.newEpicTask(epicTask2);
-        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина", epicTask2.getId());
+        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина",
+                44, Instant.now().minusSeconds(4500), epicTask2.getId());
 
 
         fileBackedTasksManager.newSubtask(subtask1);
         fileBackedTasksManager.newSubtask(subtask2);
         fileBackedTasksManager.newSubtask(subtask3);
 
-        fileBackedTasksManager.newTask(new Task("task1", "desTask1"));
+        fileBackedTasksManager.newTask(new Task("task1", "desTask1",
+                22, Instant.now().minusSeconds(5500)));
 
 
         System.out.println(fileBackedTasksManager.getAllEpicTask());

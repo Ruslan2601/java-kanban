@@ -8,6 +8,7 @@ import main.models.Subtask;
 import main.models.Task;
 import main.util.TaskNotFined;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epics.values().forEach(x -> x.getSubtasks().clear());
         epics.values().forEach(this::updateEpicStatus);
+        epics.values().forEach(this::updateEpicTime);
     }
 
     @Override
@@ -85,6 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.put(id, subtask);
         epics.get(subtask.getEpicId()).getSubtasks().add(subtask.getId());
         updateEpicStatus(epics.get(subtask.getEpicId()));
+        updateEpicTime(epics.get(subtask.getEpicId()));
         return subtask;
     }
 
@@ -118,6 +121,9 @@ public class InMemoryTaskManager implements TaskManager {
                     .removeIf(task -> task == id);
             updateEpicStatus(epics.get(subTasks.get(id)
                     .getEpicId()));
+            updateEpicTime(epics.get(subTasks.get(id)
+                    .getEpicId()));
+
             subTasks.remove(id);
         } catch (NullPointerException e) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");
@@ -166,6 +172,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasks.containsKey(id)) {
             tasks.get(id).setDescription(task.getDescription());
             tasks.get(id).setTaskName(task.getTaskName());
+            tasks.get(id).setStartTime(task.getStartTime());
+            tasks.get(id).setDuration(task.getDuration());
             tasks.get(id).setStatus(statusType);
         }
     }
@@ -175,9 +183,12 @@ public class InMemoryTaskManager implements TaskManager {
         exceptionHandler(id);
         subTasks.get(id).setEpicId(subtask.getEpicId());
         subTasks.get(id).setTaskName(subtask.getTaskName());
+        subTasks.get(id).setDuration(subtask.getDuration());
+        subTasks.get(id).setStartTime(subtask.getStartTime());
         subTasks.get(id).setDescription(subtask.getDescription());
         subTasks.get(id).setStatus(statusType);
         updateEpicStatus(epics.get(subtask.getEpicId()));
+        updateEpicTime(epics.get(subtask.getEpicId()));
     }
 
     @Override
@@ -186,6 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.get(id).setTaskName(epicTask.getTaskName());
         epics.get(id).setDescription(epicTask.getDescription());
         updateEpicStatus(epicTask);
+        updateEpicTime(epicTask);
     }
 
     //распечатываем историю запросов
@@ -217,6 +229,21 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    //обновление времени
+    private void updateEpicTime(EpicTask epicTask) {
+        long duration;
+        Instant end;
+        Instant start;
+
+        duration = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId()).mapToLong(Subtask::getDuration).sum();
+        end = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                .max(Comparator.comparing(Subtask::getStartTime)).orElse(null)).getStartTime();
+        start = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                .min(Comparator.comparing(Subtask::getEndTime)).orElse(null)).getEndTime();
+        epicTask.setDuration(duration);
+        epicTask.setStartTime(start);
+        epicTask.setEndTime(end);
+    }
 
     //ловим ошибки
     private void exceptionHandler(int id) {
