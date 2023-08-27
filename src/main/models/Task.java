@@ -4,6 +4,8 @@ import main.util.StatusType;
 import main.util.TaskType;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -125,6 +127,8 @@ public class Task {
 
     public String toStringFromFile() {
         return String.format("%s,%s,%s,%s,%s,%s,%s",
-                id, type, taskName, status, description, startTime, duration);
+                id, type, taskName, status, description,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(getStartTime().atZone(ZoneId.systemDefault())),
+                duration);
     }
 }

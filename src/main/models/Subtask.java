@@ -4,6 +4,8 @@ import main.util.StatusType;
 import main.util.TaskType;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task {
     private int epicId;
@@ -46,6 +48,8 @@ public class Subtask extends Task {
     public String toStringFromFile() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                 getId(), type, getTaskName(), getStatus(),
-                getDescription(), getStartTime(), getDuration(), getEpicId());
+                getDescription(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(getStartTime().atZone(ZoneId.systemDefault())),
+                getDuration(), getEpicId());
     }
 }

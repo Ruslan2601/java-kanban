@@ -12,6 +12,9 @@ import main.util.TaskType;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,7 +153,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     //восстанавливаем задачи из файла
     public Task fromString(String value) {
         String[] strings = value.split(",");
-
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Instant instant = LocalDateTime.parse(strings[5], dateTimeFormatter).atZone(ZoneId.systemDefault()).toInstant();
         switch (strings[1]) {
             case ("TASK"):
                 Task task = new Task(strings[2], strings[4]);
@@ -158,7 +162,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 task.setStatus(StatusType.valueOf(strings[3]));
                 task.setType(TaskType.valueOf(strings[1]));
                 task.setDuration(Integer.parseInt(strings[6]));
-                task.setStartTime(Instant.parse(strings[5]));
+                task.setStartTime(instant);
                 return task;
             case ("SUBTASK"):
                 Subtask subtask = new Subtask(strings[2], strings[4], Integer.parseInt(strings[7]));
@@ -166,10 +170,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 subtask.setStatus(StatusType.valueOf(strings[3]));
                 subtask.setType(TaskType.valueOf(strings[1]));
                 subtask.setDuration(Integer.parseInt(strings[6]));
-                subtask.setStartTime(Instant.parse(strings[5]));
+                subtask.setStartTime(instant);
                 return subtask;
             case ("EPICTASK"):
-                EpicTask epicTask = new EpicTask(strings[2], strings[4], Integer.parseInt(strings[6]), Instant.parse(strings[5]));
+                EpicTask epicTask = new EpicTask(strings[2], strings[4], Integer.parseInt(strings[6]), instant);
                 epicTask.setId(Integer.parseInt(strings[0]));
                 epicTask.setStatus(StatusType.valueOf(strings[3]));
                 epicTask.setType(TaskType.valueOf(strings[1]));
