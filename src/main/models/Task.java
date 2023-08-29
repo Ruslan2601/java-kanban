@@ -4,11 +4,9 @@ import main.util.StatusType;
 import main.util.TaskType;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
     private int id;
     private String taskName;
     private String description;
@@ -87,7 +85,10 @@ public class Task {
 
     public Instant getEndTime() {
         long seconds = 60L;
-        return startTime.plusSeconds(duration * seconds);
+        if (startTime != null) {
+            return startTime.plusSeconds(duration * seconds);
+        }
+        return null;
     }
 
     public TaskType getType() {
@@ -119,16 +120,25 @@ public class Task {
                 "id=" + id +
                 ", taskName='" + taskName + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status +
-                ", start time=" + startTime.toEpochMilli() + '\'' +
-                ", duration=" + duration + ", end time=" + getEndTime().toEpochMilli() + '\'' +
-                '}';
+                ", start time=" + startTime +
+                ", duration=" + duration + ", end time=" + getEndTime() +
+                ", status=" + status + '}';
     }
 
     public String toStringFromFile() {
         return String.format("%s,%s,%s,%s,%s,%s,%s",
                 id, type, taskName, status, description,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(getStartTime().atZone(ZoneId.systemDefault())),
+                getStartTime(),
                 duration);
+    }
+
+    @Override
+    public int compareTo(Task task) {
+        if (task.getStartTime() == null) {
+            return -1;
+        } else if (this.startTime == null) {
+            return 1;
+        }
+        return this.startTime.compareTo(task.startTime);
     }
 }

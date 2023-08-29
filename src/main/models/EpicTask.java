@@ -4,8 +4,6 @@ import main.util.StatusType;
 import main.util.TaskType;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +51,8 @@ public class EpicTask extends Task {
                 "id=" + getId() +
                 ", taskName='" + getTaskName() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", status='" + getStatus() + ", start time=" + getStartTime().toEpochMilli() +
-                ", duration=" + getDuration() + ", end time=" + getEndTime().toEpochMilli() + '\'' +
+                ", status='" + getStatus() + ", start time=" + getStartTime() +
+                ", duration=" + getDuration() + ", end time=" + getEndTime() + '\'' +
                 "SubtasksList{" +
                 "subtasks=" + subtasks +
                 '}';
@@ -63,7 +61,7 @@ public class EpicTask extends Task {
     public String toStringFromFile() {
         return String.format("%s,%s,%s,%s,%s,%s,%s",
                 getId(), type, getTaskName(), getStatus(), getDescription(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(getStartTime().atZone(ZoneId.systemDefault())),
+                getStartTime(),
                 getDuration());
     }
 }

@@ -12,9 +12,6 @@ import main.util.TaskType;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,8 +150,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     //восстанавливаем задачи из файла
     public Task fromString(String value) {
         String[] strings = value.split(",");
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Instant instant = LocalDateTime.parse(strings[5], dateTimeFormatter).atZone(ZoneId.systemDefault()).toInstant();
+        Instant instant = (!strings[5].equals("null")) ? Instant.parse(strings[5]) : null;
         switch (strings[1]) {
             case ("TASK"):
                 Task task = new Task(strings[2], strings[4]);
@@ -235,8 +231,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     manager.epics.put(task.getId(), (EpicTask) task);
                 } else if (task.getType().equals(TaskType.SUBTASK)) {
                     manager.subTasks.put(task.getId(), (Subtask) task);
+                    manager.addPrioritizedTasks(task);
                 } else {
                     manager.tasks.put(task.getId(), task);
+                    manager.addPrioritizedTasks(task);
                 }
             }
         }
@@ -258,20 +256,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager("src/resources/history.csv");
-        EpicTask epicTask = new EpicTask("Переезд", "новая квартира", 10, Instant.ofEpochSecond(1706185697L));
+        EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
         fileBackedTasksManager.newEpicTask(epicTask);
-        System.out.println(fileBackedTasksManager.getAllEpicTask());
 
         Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки",
-                5, Instant.ofEpochSecond(1716185697L), epicTask.getId());
+                5, Instant.ofEpochSecond(1717285397L), epicTask.getId());
         Subtask subtask2 = new Subtask("Грузчики", "найти помощников",
                 4, Instant.ofEpochSecond(1726185697L), epicTask.getId());
 
 
-        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер", 4, Instant.now().minusSeconds(2000));
+        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
         fileBackedTasksManager.newEpicTask(epicTask2);
         Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина",
-                44, Instant.now().minusSeconds(4500), epicTask2.getId());
+                44, Instant.ofEpochSecond(1606185697L), epicTask2.getId());
 
 
         fileBackedTasksManager.newSubtask(subtask1);
@@ -279,7 +276,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBackedTasksManager.newSubtask(subtask3);
 
         fileBackedTasksManager.newTask(new Task("task1", "desTask1",
-                22, Instant.now().minusSeconds(5500)));
+                22, null));
 
 
         System.out.println(fileBackedTasksManager.getAllEpicTask());
@@ -308,7 +305,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(fileBackedTasksManager2.getAllEpicTask());
         System.out.println(fileBackedTasksManager2.getAllSubtask());
         System.out.println(fileBackedTasksManager.getAllTasks());
-
+        fileBackedTasksManager2.getPrioritizedTasks();
 
     }
 

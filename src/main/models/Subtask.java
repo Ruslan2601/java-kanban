@@ -4,8 +4,6 @@ import main.util.StatusType;
 import main.util.TaskType;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task {
     private int epicId;
@@ -40,8 +38,8 @@ public class Subtask extends Task {
                 "id=" + super.getId() +
                 ", taskName='" + super.getTaskName() + '\'' +
                 ", description='" + super.getDescription() + '\'' +
-                ", start time=" + super.getStartTime().toEpochMilli() + '\'' +
-                ", duration=" + super.getDuration() + ", end time=" + getEndTime().toEpochMilli() + '\'' +
+                ", start time=" + super.getStartTime() + '\'' +
+                ", duration=" + super.getDuration() + ", end time=" + getEndTime() + '\'' +
                 ", status=" + super.getStatus() + '}';
     }
 
@@ -49,7 +47,8 @@ public class Subtask extends Task {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                 getId(), type, getTaskName(), getStatus(),
                 getDescription(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(getStartTime().atZone(ZoneId.systemDefault())),
-                getDuration(), getEpicId());
+                getStartTime(),
+                getDuration(),
+                getEpicId());
     }
 }
