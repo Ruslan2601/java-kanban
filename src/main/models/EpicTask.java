@@ -28,6 +28,11 @@ public class EpicTask extends Task {
         this.subtasks = subtasks;
     }
 
+    public EpicTask(int id, String taskName, String description, StatusType status) {
+        super(id, taskName, description, status);
+        this.endTime = super.getEndTime();
+    }
+
     @Override
     public Instant getEndTime() {
         return endTime;

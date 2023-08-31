@@ -189,9 +189,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     //создаем из строки с историе список с id
     public static List<Integer> historyFromString(String value) {
         List<Integer> taskList = new ArrayList<>();
-        String[] strings = value.split(",");
-        for (String str : strings) {
-            taskList.add(Integer.parseInt(str));
+        if (!value.isEmpty()) {
+            String[] strings = value.split(",");
+            for (String str : strings) {
+                taskList.add(Integer.parseInt(str));
+            }
         }
         return taskList;
     }
