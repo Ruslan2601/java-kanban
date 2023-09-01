@@ -13,11 +13,12 @@ public class Task implements Comparable<Task> {
     private long duration;
     private Instant startTime;
     private StatusType status = StatusType.NEW;
-    private TaskType type = TaskType.TASK;
+    protected TaskType type;
 
     public Task(String taskName, String description) {
         this.taskName = taskName;
         this.description = description;
+        this.type = TaskType.TASK;
     }
 
     public Task(String taskName, String description, long duration, Instant startTime, StatusType status) {
@@ -26,6 +27,7 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
         this.startTime = startTime;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public Task(int id, String taskName, String description, long duration, Instant startTime, StatusType status) {
@@ -35,6 +37,7 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
         this.startTime = startTime;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public Task(String taskName, String description, long duration, Instant startTime) {
@@ -42,6 +45,7 @@ public class Task implements Comparable<Task> {
         this.description = description;
         this.duration = duration;
         this.startTime = startTime;
+        this.type = TaskType.TASK;
     }
 
     public Task(int id, String taskName, String description, StatusType status) {
@@ -49,6 +53,7 @@ public class Task implements Comparable<Task> {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public long getDuration() {

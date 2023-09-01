@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private static int generateId = 0;
+    private int generateId = 0;
 
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Subtask> subTasks = new HashMap<>();
@@ -132,11 +132,10 @@ public class InMemoryTaskManager implements TaskManager {
                     .getEpicId()));
             prioritizedTasks.remove(subTasks.get(id));
             subTasks.remove(id);
+            historyManager.remove(id);
         } catch (NullPointerException e) {
             throw new TaskNotFined("Задача с идентификатором " + id + " не найдена.");
         }
-        historyManager.remove(id);
-        prioritizedTasks.remove(subTasks.get(id));
     }
 
     @Override
@@ -218,8 +217,8 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.getHistory().forEach(System.out::println);
     }
 
-    public static void setGenerateId(int generateId) {
-        InMemoryTaskManager.generateId = generateId;
+    public void setGenerateId(int generateId) {
+        this.generateId = generateId;
     }
 
     //обновление статуса
@@ -247,10 +246,16 @@ public class InMemoryTaskManager implements TaskManager {
         Instant start;
 
         duration = subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId()).mapToLong(Subtask::getDuration).sum();
-        end = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
-                .max(Comparator.comparing(Subtask::getEndTime)).orElse(null)).getEndTime();
-        start = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
-                .min(Comparator.comparing(Subtask::getStartTime)).orElse(null)).getStartTime();
+
+        if (epicTask.getSubtasks().size() == 0) {
+            start = null;
+            end = null;
+        } else {
+            start = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                    .min(Comparator.comparing(Subtask::getStartTime)).orElse(null)).getStartTime();
+            end = Objects.requireNonNull(subTasks.values().stream().filter(x -> x.getEpicId() == epicTask.getId())
+                    .max(Comparator.comparing(Subtask::getEndTime)).orElse(null)).getEndTime();
+        }
         epicTask.setDuration(duration);
         epicTask.setStartTime(start);
         epicTask.setEndTime(end);

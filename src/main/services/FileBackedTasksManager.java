@@ -241,7 +241,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
         }
 
-        FileBackedTasksManager.setGenerateId(generateId);
+        manager.setGenerateId(generateId);
 
         for (int id : historyList) {
             if (manager.tasks.containsKey(id)) {

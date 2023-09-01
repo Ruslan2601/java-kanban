@@ -7,26 +7,29 @@ import java.time.Instant;
 
 public class Subtask extends Task {
     private int epicId;
-    private TaskType type = TaskType.SUBTASK;
 
     public Subtask(String taskName, String description, int epicId) {
         super(taskName, description);
         this.epicId = epicId;
+        super.type = TaskType.SUBTASK;
     }
 
     public Subtask(String taskName, String description, long duration, Instant startTime,  int epicId) {
         super(taskName, description, duration, startTime);
         this.epicId = epicId;
+        super.type = TaskType.SUBTASK;
     }
 
     public Subtask(String taskName, String description, long duration, Instant startTime, StatusType status, int epicId) {
         super(taskName, description, duration, startTime, status);
         this.epicId = epicId;
+        super.type = TaskType.SUBTASK;
     }
 
     public Subtask(int id, String taskName, String description, long duration, Instant startTime, StatusType status, int epicId) {
         super(id, taskName, description, duration, startTime, status);
         this.epicId = epicId;
+        super.type = TaskType.SUBTASK;
     }
 
     public int getEpicId() {
@@ -50,7 +53,7 @@ public class Subtask extends Task {
 
     public String toStringFromFile() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-                getId(), type, getTaskName(), getStatus(),
+                getId(), getType(), getTaskName(), getStatus(),
                 getDescription(),
                 getStartTime(),
                 getDuration(),

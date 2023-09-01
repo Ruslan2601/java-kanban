@@ -28,26 +28,26 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addTaskToHistory() {
+    void addTaskToHistory_Size_Equals() {
         historyManager.addHistory(task);
-        assertEquals(1, historyManager.getHistory().size());
-        assertEquals(List.of(task), historyManager.getHistory());
+        assertEquals(1, historyManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(List.of(task), historyManager.getHistory(), "Задачи не совпадают.");
     }
 
     @Test
-    void removeTaskInHistory() {
+    void removeTaskInHistory_Size_Equals() {
         historyManager.addHistory(task);
         historyManager.addHistory(task2);
         historyManager.addHistory(task3);
         historyManager.remove(task2.getId());
-        assertEquals(2, historyManager.getHistory().size());
-        assertEquals(List.of(task, task3), historyManager.getHistory());
+        assertEquals(2, historyManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(List.of(task, task3), historyManager.getHistory(), "Задачи не совпадают.");
     }
 
     @Test
-    void getHistory() {
-        assertEquals(0, historyManager.getHistory().size());
+    void getHistory_Size_Empty() {
+        assertEquals(0, historyManager.getHistory().size(), "Неверное количество задач.");
         historyManager.addHistory(task);
-        assertEquals(1, historyManager.getHistory().size());
+        assertEquals(1, historyManager.getHistory().size(), "Неверное количество задач.");
     }
 }

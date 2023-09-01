@@ -38,13 +38,13 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     void save_loadFromFile_shouldSaveAndLoadCorrectly() {
         Task thisTask = manager.newTask(task);
         EpicTask thisEpic = manager.newEpicTask(epicTask);
-        FileBackedTasksManager.loadFromFile(file);
+        FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(file);
         List<Task> listOfTasks = new ArrayList<>(manager.getAllTasks());
         List<EpicTask> listOfEpics = new ArrayList<>(manager.getAllEpicTask());
 
-        assertEquals(List.of(thisTask), listOfTasks);
-        assertEquals(List.of(thisEpic), listOfEpics);
-        assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
+        assertEquals(List.of(thisTask), listOfTasks, "Задачи не совпадают.");
+        assertEquals(List.of(thisEpic), listOfEpics, "Задачи не совпадают.");
+        assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask(), "Список не пустой.");
     }
 
     @Test
@@ -53,13 +53,13 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         manager.getEpicById(epicTask.getId());
         FileBackedTasksManager.loadFromFile(file);
 
-        assertEquals(List.of(thisEpic), manager.historyManager.getHistory());
+        assertEquals(List.of(thisEpic), manager.historyManager.getHistory(), "Задачи не совпадают.");
     }
 
     @Test
     void save_loadFromFile_HistoryEmpty() {
         FileBackedTasksManager.loadFromFile(file);
 
-        assertEquals(Collections.EMPTY_LIST, manager.historyManager.getHistory());
+        assertEquals(Collections.EMPTY_LIST, manager.historyManager.getHistory(), "Список не пустой.");
     }
 }
