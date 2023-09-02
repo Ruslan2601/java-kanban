@@ -4,9 +4,9 @@ import main.interfaces.HistoryManager;
 import main.models.EpicTask;
 import main.models.Subtask;
 import main.models.Task;
-import main.util.ManagerSaveException;
+import main.exceptions.ManagerSaveException;
 import main.util.StatusType;
-import main.util.TaskNotFined;
+import main.exceptions.TaskNotFined;
 import main.util.TaskType;
 
 import java.io.*;

@@ -6,8 +6,8 @@ import main.models.EpicTask;
 import main.models.Subtask;
 import main.models.Task;
 import main.util.StatusType;
-import main.util.TaskIntersectionsError;
-import main.util.TaskNotFined;
+import main.exceptions.TaskIntersectionsError;
+import main.exceptions.TaskNotFined;
 
 import java.time.Instant;
 import java.util.*;
@@ -289,11 +289,13 @@ public class InMemoryTaskManager implements TaskManager {
             }
             Instant startTime = taskValue.getStartTime();
             Instant endTime = taskValue.getEndTime();
-            boolean isCovering = startTime.isBefore(startOfTask) && endTime.isAfter(endOfTask);
-            boolean isOverlappingByEnd = startTime.isBefore(startOfTask) && endTime.isAfter(startOfTask);
-            boolean isOverlappingByStart = startTime.isBefore(endOfTask) && endTime.isAfter(endOfTask);
-            boolean isWithin = startTime.isAfter(startOfTask) && endTime.isBefore(endOfTask);
-            isIntersection = isCovering || isOverlappingByEnd || isOverlappingByStart || isWithin;
+            if (startTime.isBefore(startOfTask) && endTime.isAfter(endOfTask) ||
+                    startTime.isBefore(startOfTask) && endTime.isAfter(startOfTask) ||
+                    startTime.isBefore(endOfTask) && endTime.isAfter(endOfTask) ||
+                    startTime.isAfter(startOfTask) && endTime.isBefore(endOfTask)) {
+                isIntersection = true;
+                break;
+            }
         }
         return isIntersection;
     }

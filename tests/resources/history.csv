@@ -1,4 +1,4 @@
 id,type,name,status,description,startTime,duration,epic
-1,TASK,Task 1,NEW,Groceries,2023-06-05T21:00:00Z,0
-2,EPICTASK,EpicTask 1,NEW,Household chores,null,0
+1,EPICTASK,EpicTask 1,NEW,Household chores,null,0
 
+1,
