@@ -5,6 +5,7 @@ import main.models.Subtask;
 import main.models.Task;
 import main.util.StatusType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -54,4 +55,10 @@ public interface TaskManager {
     void changeEpicTask(int id, EpicTask epicTask);
 
     void printHistory();
+
+    //получаем историю
+    List<Task> getHistory();
+
+    //список задач отсортированный по приоритету
+    ArrayList<Task> getPrioritizedTasks();
 }

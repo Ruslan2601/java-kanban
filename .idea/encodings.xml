@@ -6,6 +6,11 @@
     <file url="file://$PROJECT_DIR$/src/main/models/EpicTask.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/models/Subtask.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/models/Task.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/servers/HttpTaskServer.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/servers/HttpTaskServer.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/servers/HttpTaskServer.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/servers/KVServer.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/servers/KVServer.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/services/FileBackedTasksManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/services/InMemoryTaskManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/util/StatusType.java" charset="UTF-8" />

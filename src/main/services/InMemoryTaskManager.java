@@ -217,6 +217,12 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.getHistory().forEach(System.out::println);
     }
 
+    //получаем историю
+    @Override
+    public List<Task> getHistory(){
+        return historyManager.getHistory();
+    }
+
     public void setGenerateId(int generateId) {
         this.generateId = generateId;
     }
