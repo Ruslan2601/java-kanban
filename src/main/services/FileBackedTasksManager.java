@@ -127,7 +127,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     //сохраняем в файл все задачи и историю
-    private void save() {
+    protected void save() {
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
             fileWriter.write("id,type,name,status,description,startTime,duration,epic" + "\n");
             for (Task task : super.getAllTasks()) {

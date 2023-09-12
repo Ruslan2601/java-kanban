@@ -24,6 +24,10 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
+    public static TaskManager getDefault(String url) {
+        return new HttpTaskManager(url);
+    }
+
     public static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Instant.class, new TypeAdapter<Instant>() {

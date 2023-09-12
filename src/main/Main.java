@@ -1,58 +1,55 @@
 package main;
 
-import main.interfaces.TaskManager;
 import main.models.EpicTask;
 import main.models.Subtask;
+import main.models.Task;
+import main.servers.HttpTaskServer;
+import main.servers.KVServer;
+import main.services.HttpTaskManager;
 import main.services.Managers;
 import main.util.StatusType;
 
+import java.io.IOException;
 import java.time.Instant;
 
 public class Main {
 
-    static TaskManager inMemoryTaskManager = Managers.getDefault();
+    public static void main(String[] args) throws IOException {
+        new KVServer().start();
 
-    public static void main(String[] args) {
+        HttpTaskManager httpManager = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
+        new HttpTaskServer(httpManager).start();
 
-        EpicTask epicTask = new EpicTask("Переезд", "новая квартира");
-        inMemoryTaskManager.newEpicTask(epicTask);
+        httpManager.newTask(new Task("Task 1", "des1", 2,
+                Instant.ofEpochMilli(1686603600000L), StatusType.NEW));
+        httpManager.newTask(new Task("Task 2", "des2", 10,
+                Instant.ofEpochMilli(1686790000000L), StatusType.IN_PROGRESS));
 
-        Subtask subtask1 = new Subtask("Вещи", "сложить все в коробки",
-                5, Instant.ofEpochSecond(1717285397L), epicTask.getId());
-        Subtask subtask2 = new Subtask("Грузчики", "найти помощников",
-                4, Instant.ofEpochSecond(1726185697L), epicTask.getId());
+        EpicTask epic1 = new EpicTask("Epic 1", "epic des");
+        httpManager.newEpicTask(epic1);
+        httpManager.newSubtask(new Subtask("Subtask 1", "subtask des 1", 12,
+                Instant.ofEpochMilli(1686803600000L),
+                StatusType.IN_PROGRESS, 3));
+        httpManager.newSubtask(new Subtask("Subtask 2", "subtask des 2", 9,
+                Instant.ofEpochMilli(1686903600000L),
+                StatusType.NEW, 3));
+        httpManager.newSubtask(new Subtask("Subtask 3", "subtask des 3", 11,
+                Instant.ofEpochMilli(1687003600000L),
+                StatusType.DONE, 3));
+
+        httpManager.getTaskById(1);
+        httpManager.getEpicById(3);
+        httpManager.getSubtaskById(4);
 
 
-        EpicTask epicTask2 = new EpicTask("Ужин", "подумать что приготовить на вечер");
-        inMemoryTaskManager.newEpicTask(epicTask2);
-        Subtask subtask3 = new Subtask("Магазин", "купить продукты для ужина",
-                44, Instant.ofEpochSecond(1606185697L), epicTask2.getId());
+        System.out.println("------------------------------------------------------");
 
-        inMemoryTaskManager.newSubtask(subtask1);
-        inMemoryTaskManager.newSubtask(subtask2);
-        inMemoryTaskManager.newSubtask(subtask3);
 
-        System.out.println(inMemoryTaskManager.getAllEpicTask());
-        System.out.println(inMemoryTaskManager.getAllSubtask());
-        inMemoryTaskManager.getSubtaskById(3);
-        inMemoryTaskManager.getSubtaskById(4);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(2);
-        inMemoryTaskManager.getSubtaskById(5);
-        inMemoryTaskManager.getSubtaskById(3);
-        inMemoryTaskManager.getSubtaskById(4);
-        inMemoryTaskManager.getEpicById(1);
-        inMemoryTaskManager.getEpicById(2);
-        inMemoryTaskManager.getSubtaskById(5);
+        httpManager = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
+        httpManager.load();
 
-        inMemoryTaskManager.printHistory();
-        System.out.println();
-        inMemoryTaskManager.removeEpicTaskById(2);
-        inMemoryTaskManager.printHistory();
-        System.out.println();
-
-        inMemoryTaskManager.changeSubtask(3, subtask1, StatusType.DONE);
-        System.out.println(inMemoryTaskManager.getAllSubtask());
-
+        System.out.println(httpManager.getAllEpicTask());
+        System.out.println(httpManager.getHistory());
+        System.out.println(httpManager.getPrioritizedTasks());
     }
 }

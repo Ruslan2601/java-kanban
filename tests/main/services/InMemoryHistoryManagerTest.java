@@ -30,8 +30,8 @@ class InMemoryHistoryManagerTest {
     @Test
     void addTaskToHistory_Size_Equals() {
         historyManager.addHistory(task);
-        assertEquals(1, historyManager.getHistory().size(), "Неверное количество задач.");
-        assertEquals(List.of(task), historyManager.getHistory(), "Задачи не совпадают.");
+        assertEquals(1, historyManager.getHistory().size(), "РќРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡.");
+        assertEquals(List.of(task), historyManager.getHistory(), "Р—Р°РґР°С‡Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
     }
 
     @Test
@@ -40,14 +40,14 @@ class InMemoryHistoryManagerTest {
         historyManager.addHistory(task2);
         historyManager.addHistory(task3);
         historyManager.remove(task2.getId());
-        assertEquals(2, historyManager.getHistory().size(), "Неверное количество задач.");
-        assertEquals(List.of(task, task3), historyManager.getHistory(), "Задачи не совпадают.");
+        assertEquals(2, historyManager.getHistory().size(), "РќРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡.");
+        assertEquals(List.of(task, task3), historyManager.getHistory(), "Р—Р°РґР°С‡Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
     }
 
     @Test
     void getHistory_Size_Empty() {
-        assertEquals(0, historyManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(0, historyManager.getHistory().size(), "РќРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡.");
         historyManager.addHistory(task);
-        assertEquals(1, historyManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(1, historyManager.getHistory().size(), "РќРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡.");
     }
 }
