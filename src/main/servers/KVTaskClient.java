@@ -1,5 +1,7 @@
 package main.servers;
 
+import main.exceptions.ResponseStatusCodeError;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,19 +15,30 @@ public class KVTaskClient {
 
     public KVTaskClient(String serverUrl) {
         this.serverUrl = serverUrl;
+        apiToken = getApiToken(serverUrl);
+    }
+
+    private String getApiToken(String serverUrl) {
         URI url = URI.create(serverUrl + "/register");
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(url)
                 .header("Accept", "application/json")
                 .build();
+        return send(request);
+    }
+
+    private String send(HttpRequest request) {
         HttpClient client = HttpClient.newHttpClient();
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new ResponseStatusCodeError("Что-то пошло не так, код - " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
-            System.out.println("Проверьте адрес");
+            throw new ResponseStatusCodeError("Что-то пошло не так, код - " + response.statusCode());
         }
-        apiToken = response.body();
+        return response.body();
     }
 
     public void put(String key, String json) {
@@ -35,15 +48,7 @@ public class KVTaskClient {
                 .uri(uri)
                 .header("Accept", "application/json")
                 .build();
-        HttpClient client = HttpClient.newHttpClient();
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
-                System.out.println("Что-то пошло не так, код - " + response.statusCode());
-            }
-        } catch (IOException | InterruptedException e) {
-            System.out.println("Проверьте адрес");
-        }
+        send(request);
     }
 
     public String load(String key) {
@@ -53,16 +58,6 @@ public class KVTaskClient {
                 .uri(uri)
                 .header("Accept", "application/json")
                 .build();
-        HttpClient client = HttpClient.newHttpClient();
-        try {
-            HttpResponse.BodyHandler<String> s = HttpResponse.BodyHandlers.ofString();
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
-                return "Что-то пошло не так, код - " + response.statusCode();
-            }
-            return response.body();
-        } catch (IOException | InterruptedException e) {
-            return "Проверьте адрес";
-        }
+        return send(request);
     }
 }

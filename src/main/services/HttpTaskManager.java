@@ -16,6 +16,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     private final KVTaskClient client;
     private Gson gson = Managers.getGson();
+    private final String TASK = "tasks";
+    private final String SUBTASK = "subtasks";
+    private final String EPICTASK = "epics";
 
     public HttpTaskManager(String url) {
         this.client = new KVTaskClient(url);
@@ -35,36 +38,47 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     public void load() {
-        loadTasks("tasks");
-        loadTasks("epics");
-        loadTasks("subtasks");
+        loadTasks(TASK);
+        loadTasks(SUBTASK);
+        loadTasks(EPICTASK);
         loadHistory();
     }
 
     private void loadTasks(String type) {
         JsonElement jsonElement = JsonParser.parseString(client.load(type));
         JsonArray jsonHistoryArray = jsonElement.getAsJsonArray();
+        int generateId = 0;
         for (JsonElement element : jsonHistoryArray) {
             switch (type) {
                 case "tasks":
                     Task task = gson.fromJson(element.getAsJsonObject(), Task.class);
                     tasks.put(task.getId(), task);
+                    if (task.getId() > generateId) {
+                        generateId = task.getId();
+                    }
                     addPrioritizedTasks(task);
                     break;
                 case "subtasks":
                     Subtask subtask = gson.fromJson(element.getAsJsonObject(), Subtask.class);
                     subTasks.put(subtask.getId(), subtask);
+                    if (subtask.getId() > generateId) {
+                        generateId = subtask.getId();
+                    }
                     addPrioritizedTasks(subtask);
                     break;
                 case "epics":
                     EpicTask epicTask = gson.fromJson(element.getAsJsonObject(), EpicTask.class);
                     epics.put(epicTask.getId(), epicTask);
+                    if (epicTask.getId() > generateId) {
+                        generateId = epicTask.getId();
+                    }
                     break;
                 default:
                     System.out.println("Такого типа задачи нет");
                     return;
             }
         }
+        setGenerateId(generateId);
     }
 
     private void loadHistory() {

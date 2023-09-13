@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import main.interfaces.HistoryManager;
 import main.interfaces.TaskManager;
+import main.servers.KVServer;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -26,6 +27,10 @@ public class Managers {
 
     public static TaskManager getDefault(String url) {
         return new HttpTaskManager(url);
+    }
+
+    public static KVServer getDefaultKVServer() throws IOException {
+        return new KVServer();
     }
 
     public static Gson getGson() {

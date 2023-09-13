@@ -4,7 +4,6 @@ import main.models.EpicTask;
 import main.models.Subtask;
 import main.models.Task;
 import main.servers.HttpTaskServer;
-import main.servers.KVServer;
 import main.services.HttpTaskManager;
 import main.services.Managers;
 import main.util.StatusType;
@@ -15,7 +14,7 @@ import java.time.Instant;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        new KVServer().start();
+        Managers.getDefaultKVServer().start();
 
         HttpTaskManager httpManager = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
         new HttpTaskServer(httpManager).start();

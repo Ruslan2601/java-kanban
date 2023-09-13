@@ -42,7 +42,7 @@ class HttpTaskServerTest {
 
     @BeforeEach
     void init() throws IOException {
-        kvServer = new KVServer();
+        kvServer = Managers.getDefaultKVServer();
         kvServer.start();
         manager = Managers.getDefault("http://localhost:8078");
         httpTaskServer = new HttpTaskServer(manager);

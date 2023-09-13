@@ -34,7 +34,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     @BeforeAll
     static void startServer() throws IOException {
-        server = new KVServer();
+        server = Managers.getDefaultKVServer();
         server.start();
     }
 
